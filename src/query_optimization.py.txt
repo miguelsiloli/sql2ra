@@ -1,0 +1,14 @@
+from .ast.syntax import ASTNode
+
+def optimize_ast(ast: ASTNode) -> ASTNode:
+    """
+    Optimizes the AST.
+
+    Args:
+        ast (ASTNode): AST.
+
+    Returns:
+        ASTNode: Optimized AST.
+    """
+    # Abstract implementation
+    return ast

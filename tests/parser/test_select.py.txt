@@ -1,0 +1,124 @@
+import pytest
+from src.ast.primitives import SelectClause, SelectItem, Identifier, FunctionCall, Literal
+from src.lexer import Token
+from src.ast.syntax.parser import Parser
+
+@pytest.fixture
+def tokens():
+    return [
+        Token(type='KEYWORD', value='SELECT'),
+        Token(type='IDENTIFIER', value='a'),
+        Token(type='PUNCTUATION', value='.'),
+        Token(type='IDENTIFIER', value='id'),
+        Token(type='PUNCTUATION', value=','),
+        Token(type='IDENTIFIER', value='a'),
+        Token(type='PUNCTUATION', value='.'),
+        Token(type='IDENTIFIER', value='name'),
+        Token(type='PUNCTUATION', value=','),
+        Token(type='IDENTIFIER', value='b'),
+        Token(type='PUNCTUATION', value='.'),
+        Token(type='IDENTIFIER', value='department'),
+        Token(type='KEYWORD', value='FROM'),
+        Token(type='IDENTIFIER', value='employees'),
+        Token(type='IDENTIFIER', value='a'),
+        Token(type='KEYWORD', value='INNER JOIN'),
+        Token(type='IDENTIFIER', value='departments'),
+        Token(type='IDENTIFIER', value='b'),
+        Token(type='KEYWORD', value='ON'),
+        Token(type='IDENTIFIER', value='a'),
+        Token(type='PUNCTUATION', value='.'),
+        Token(type='IDENTIFIER', value='department_id'),
+        Token(type='OPERATOR', value='='),
+        Token(type='IDENTIFIER', value='b'),
+        Token(type='PUNCTUATION', value='.'),
+        Token(type='IDENTIFIER', value='id'),
+        Token(type='KEYWORD', value='WHERE'),
+        Token(type='IDENTIFIER', value='a'),
+        Token(type='PUNCTUATION', value='.'),
+        Token(type='IDENTIFIER', value='salary'),
+        Token(type='OPERATOR', value='>'),
+        Token(type='LITERAL', value='50000'),
+        Token(type='KEYWORD', value='AND'),
+        Token(type='IDENTIFIER', value='b'),
+        Token(type='PUNCTUATION', value='.'),
+        Token(type='IDENTIFIER', value='name'),
+        Token(type='OPERATOR', value='LIKE'),
+        Token(type='LITERAL', value="'Engineering%'"),
+        Token(type='KEYWORD', value='ORDER BY'),
+        Token(type='IDENTIFIER', value='a'),
+        Token(type='PUNCTUATION', value='.'),
+        Token(type='IDENTIFIER', value='name'),
+        Token(type='PUNCTUATION', value=';')
+    ]
+
+def parse_query(tokens):
+    parser = Parser(tokens)
+    query = parser.parse()
+    return query.select_clause
+
+def test_basic_select(tokens):
+    sql_tokens = tokens
+    select_clause = parse_query(sql_tokens)
+    expected = SelectClause([
+        SelectItem(Identifier('a.id')),
+        SelectItem(Identifier('a.name')),
+        SelectItem(Identifier('b.department'))
+    ])
+    assert select_clause.to_dict() == expected.to_dict()
+
+# def test_select_with_aliases(tokens):
+#     sql_tokens = tokens
+#     sql_tokens.insert(4, Token(type='KEYWORD', value='AS'))
+#     sql_tokens.insert(5, Token(type='IDENTIFIER', value='employee_id'))
+#     sql_tokens.insert(8, Token(type='KEYWORD', value='AS'))
+#     sql_tokens.insert(9, Token(type='IDENTIFIER', value='employee_name'))
+#     select_clause = parse_query(sql_tokens)
+#     expected = SelectClause([
+#         SelectItem(Identifier('a.id'), 'employee_id'),
+#         SelectItem(Identifier('a.name'), 'employee_name')
+#     ])
+#     print(select_clause.to_dict())
+#     assert select_clause.to_dict() == expected.to_dict()
+
+def test_select_functions(tokens):
+    sql_tokens = tokens
+    sql_tokens[0:2] = [
+        Token(type='KEYWORD', value='SELECT'),
+        Token(type='KEYWORD', value='COUNT'),
+        Token(type='PUNCTUATION', value='('),
+        Token(type='IDENTIFIER', value='id'),
+        Token(type='PUNCTUATION', value=')')
+    ]
+    select_clause = parse_query(sql_tokens)
+    expected = SelectClause([
+        SelectItem(FunctionCall('COUNT', [Identifier('id')]))
+    ])
+    assert select_clause.to_dict() == expected.to_dict()
+
+# def test_select_functions_with_alias(tokens):
+#     sql_tokens = tokens
+#     sql_tokens[0:2] = [
+#         Token(type='KEYWORD', value='SELECT'),
+#         Token(type='KEYWORD', value='MAX'),
+#         Token(type='PUNCTUATION', value='('),
+#         Token(type='IDENTIFIER', value='salary'),
+#         Token(type='PUNCTUATION', value=')'),
+#         Token(type='KEYWORD', value='AS'),
+#         Token(type='IDENTIFIER', value='max_salary')
+#     ]
+#     select_clause = parse_query(sql_tokens)
+#     expected = SelectClause([
+#         SelectItem(FunctionCall('MAX', [Identifier('salary')]), 'max_salary')
+#     ])
+#     assert select_clause.to_dict() == expected.to_dict()
+
+# def test_distinct_columns(tokens):
+#     sql_tokens = tokens
+#     sql_tokens.insert(1, Token(type='KEYWORD', value='DISTINCT'))
+#     select_clause = parse_query(sql_tokens)
+#     expected = SelectClause([
+#         SelectItem(Identifier('a.id'), None, True),
+#         SelectItem(Identifier('a.name'), None, True),
+#         SelectItem(Identifier('b.department'), None, True)
+#     ])
+#     assert select_clause.to_dict() == expected.to_dict()

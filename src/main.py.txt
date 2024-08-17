@@ -1,0 +1,41 @@
+from lexer.lexer import tokenize
+from parser.parser import parse
+from semantic_analysis.query_validation import validate_ast
+from optimization.query_optimization import optimize_ast
+from relational_algebra.operator_mapping import map_to_relational_algebra
+from relational_algebra.expression_translation import translate_expression
+from relational_algebra.tree_construction import construct_tree
+from relational_algebra.tree_optimization import optimize_tree
+from relational_algebra.notation_generation import compose_expression
+
+def main():
+    sql_query = get_user_input()
+    
+    # Lexical Analysis
+    tokens = tokenize(sql_query)
+    
+    # Syntactic Analysis
+    ast = parse(tokens)
+    
+    # Semantic Analysis
+    validated_ast = validate_ast(ast)
+    
+    # Query Optimization (Optional)
+    optimized_ast = optimize_ast(validated_ast)
+    
+    # Relational Algebra Mapping
+    rel_algebra_tree = map_to_relational_algebra(optimized_ast)
+    
+    # Tree Construction
+    ra_tree = construct_tree(rel_algebra_tree)
+    
+    # Tree Optimization
+    optimized_ra_tree = optimize_tree(ra_tree)
+    
+    # Relational Algebra Notation Generation
+    ra_expression = compose_expression(optimized_ra_tree)
+    
+    print(ra_expression)
+
+if __name__ == "__main__":
+    main()

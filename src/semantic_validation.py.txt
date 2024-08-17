@@ -1,0 +1,15 @@
+from typing import Union, List
+from .ast.syntax import ASTNode
+
+def validate_ast(ast: ASTNode) -> Union[ASTNode, List[str]]:
+    """
+    Validates the AST for semantic correctness.
+
+    Args:
+        ast (ASTNode): AST.
+
+    Returns:
+        Union[ASTNode, List[str]]: Validated AST or a list of error messages.
+    """
+    # Abstract implementation
+    return ast
