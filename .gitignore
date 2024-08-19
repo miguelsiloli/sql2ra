@@ -3,3 +3,7 @@ test_file.py
 test_from.py
 test_join_parser.py
 test_where_parser.py
+ast/__pycache__
+ast/primitives/__pycache__
+ast/syntax/__pycache__
+ast/derived_types/__pycache__

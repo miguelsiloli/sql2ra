@@ -6,8 +6,6 @@ from .derived_types import (
     FromClause,
     WhereClause,
     JoinClause,
-    OrderByClause,
-    GroupByClause,
     Query,
 )
 from .syntax import *
