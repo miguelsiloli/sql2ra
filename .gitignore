@@ -7,3 +7,4 @@ ast/__pycache__
 ast/primitives/__pycache__
 ast/syntax/__pycache__
 ast/derived_types/__pycache__
+__pycache__

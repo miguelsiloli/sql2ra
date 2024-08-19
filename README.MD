@@ -12,19 +12,19 @@ Example:
 
 A simple SQL query.
 
-´´´sql
+```sql
 SELECT name, age FROM users WHERE age > 30 AND city = 'New York';
-´´´
+```
 
 Its abstract form.
 
-´´´sql
+```sql
 SELECT COLUMN_1, COLUMN_2 FROM TABLE_1 WHERE COLUMN_2 > LITERAL_1 AND COLUMN_3 = LITERAL_2;
-´´´
+```
 
-Its Abstract Syntax Tree represenation.
+Its Abstract Syntax Tree representation.
 
-´´´json
+```json
 Query(
     select_clause=SelectClause(children=[
         {'node_type': 'SelectItem', 'children': [
@@ -57,7 +57,7 @@ Query(
     having_clause=None,
     order_by_clause=None
 )
-´´´
+```
 
 ## Features
 
@@ -70,7 +70,7 @@ Query(
 **Nested Structures**
 - Such as logical operators and conditions. These are higher level structures which link several basic nodes. Example provided are multiple conditions on WHERE clause. A logical operation has multiple derived types (comparisons). Each comparison has a left, opertor and right tokens.
 
-´´´python
+```python
 LogicalOperation(
     left=Comparison(
         left=Identifier('age'),
@@ -84,7 +84,7 @@ LogicalOperation(
         right=Literal('New York')
     )
 )
-´´´
+```
 
 **Recursive Descent Parser**
 - Consumption: As the parser processes the token stream, it "consumes" tokens to move forward. This means it checks the current token, validates it according to the expected structure (e.g., "SELECT", "FROM", etc.), and then advances to the next token. 
